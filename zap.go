@@ -5,6 +5,12 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
+	"sync"
+)
+
+var (
+	logger *zap.SugaredLogger
+	once   sync.Once
 )
 
 func logLevel() zapcore.Level {
@@ -36,7 +42,7 @@ func jsonEncoder() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(cfg)
 }
 
-func NewLogger() (Logger, error) {
+func GetLogger() (*zap.SugaredLogger, error) {
 
 	once.Do(func() {
 		cores := make([]zapcore.Core, 0)
@@ -60,13 +66,10 @@ func NewLogger() (Logger, error) {
 
 		l := zap.New(
 			combinedCore,
-			zap.AddCallerSkip(1),
+			zap.AddCallerSkip(0),
 			zap.AddCaller(),
 		)
-		logger = &internalLogger{
-			log:   l,
-			sugar: l.Sugar(),
-		}
+		logger = l.Sugar()
 
 	})
 
