@@ -31,6 +31,7 @@ func logLevelFile() zapcore.Level {
 
 func textEncoder() zapcore.Encoder {
 	devConfig := zap.NewDevelopmentEncoderConfig()
+	//devConfig.FunctionKey = "func"
 	devConfig.EncodeCaller = zapcore.FullCallerEncoder
 	return zapcore.NewConsoleEncoder(devConfig)
 }
@@ -66,7 +67,7 @@ func GetLogger() (*zap.SugaredLogger, error) {
 
 		l := zap.New(
 			combinedCore,
-			zap.AddCallerSkip(0),
+			zap.AddCallerSkip(2),
 			zap.AddCaller(),
 		)
 		logger = l.Sugar()
