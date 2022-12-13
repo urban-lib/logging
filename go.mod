@@ -1,4 +1,4 @@
-module github.com/urban-lib/logging
+module github.com/urban-lib/logging/v2
 
 go 1.18
 
