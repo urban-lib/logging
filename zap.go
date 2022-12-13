@@ -67,7 +67,7 @@ func GetLogger() (*zap.SugaredLogger, error) {
 
 		l := zap.New(
 			combinedCore,
-			zap.AddCallerSkip(2),
+			zap.AddCallerSkip(1),
 			zap.AddCaller(),
 		)
 		logger = l.Sugar()
