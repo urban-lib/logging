@@ -1,5 +1,7 @@
 package logging
 
+import "go.uber.org/zap"
+
 // Debugf formatting string
 func Debugf(format string, args ...interface{}) { logger.Debugf(format, args...) }
 
@@ -37,4 +39,12 @@ func Panic(args ...interface{}) { logger.Panic(args...) }
 func Fatal(args ...interface{}) { logger.Fatal(args...) }
 
 // WithFields formatting string
-func WithFields(fields Fields) Logger { return logger.WithFields(fields) }
+func WithFields(fields Fields) *zap.SugaredLogger {
+	var f = make([]interface{}, 0)
+	for k, v := range fields {
+		f = append(f, k)
+		f = append(f, v)
+	}
+	newLogger := logger.With(f...)
+	return newLogger
+}
