@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	logger *zap.SugaredLogger
-	once   sync.Once
+	sugaredLogger *zap.SugaredLogger
+	logger        *zap.Logger
+	once          sync.Once
 )
 
 func logLevel() zapcore.Level {
@@ -43,7 +44,7 @@ func jsonEncoder() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(cfg)
 }
 
-func GetLogger() (*zap.SugaredLogger, error) {
+func GetLogger() (*zap.SugaredLogger, *zap.Logger, error) {
 
 	once.Do(func() {
 		cores := make([]zapcore.Core, 0)
@@ -65,14 +66,14 @@ func GetLogger() (*zap.SugaredLogger, error) {
 
 		combinedCore := zapcore.NewTee(cores...)
 
-		l := zap.New(
+		logger = zap.New(
 			combinedCore,
 			zap.AddCallerSkip(1),
 			zap.AddCaller(),
 		)
-		logger = l.Sugar()
+		sugaredLogger = logger.Sugar()
 
 	})
 
-	return logger, nil
+	return sugaredLogger, logger, nil
 }
