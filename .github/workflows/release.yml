@@ -10,7 +10,7 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 permissions:
   contents: write
@@ -35,7 +35,7 @@ jobs:
           #   feat  → minor
           #   fix   → patch
           #   BREAKING CHANGE / feat! / fix! → major
-          release_branches: main
+          release_branches: master
 
       - name: Create GitHub Release
         if: steps.tag.outputs.new_tag
