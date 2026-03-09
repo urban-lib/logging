@@ -1,18 +1,18 @@
 # logging/v3 — Documentation
 
-Go-бібліотека структурованого логування на основі [Uber Zap](https://github.com/uber-go/zap) з підтримкою ротації лог-файлів через [lumberjack](https://github.com/natefinch/lumberjack.v2).
+A Go structured logging library built on [Uber Zap](https://github.com/uber-go/zap) with log file rotation via [lumberjack](https://github.com/natefinch/lumberjack.v2).
 
-## Встановлення
+## Installation
 
 ```bash
 go get github.com/urban-lib/logging/v3
 ```
 
-## Конструктори
+## Constructors
 
 ### `New(opts ...Option) (Logger, error)`
 
-Створює логер із функціональними опціями поверх `DefaultConfig()`:
+Creates a logger with functional options on top of `DefaultConfig()`:
 
 ```go
 logger, err := logging.New(
@@ -25,7 +25,7 @@ logger, err := logging.New(
 
 ### `NewWithConfig(cfg Config) (Logger, error)`
 
-Створює логер напряму зі структури `Config`:
+Creates a logger directly from a `Config` struct:
 
 ```go
 logger, err := logging.NewWithConfig(logging.Config{
@@ -40,13 +40,13 @@ logger, err := logging.NewWithConfig(logging.Config{
 
 ### `NewFromEnv() (Logger, error)`
 
-Створює логер із змінних середовища (перезаписує `DefaultConfig()`):
+Creates a logger from environment variables (overrides `DefaultConfig()`):
 
 ```go
 logger, err := logging.NewFromEnv()
 ```
 
-## Інтерфейс Logger
+## Logger Interface
 
 ```go
 type Logger interface {
@@ -78,11 +78,11 @@ type Logger interface {
 }
 ```
 
-- `WithFields` — повертає **новий** `Logger` з доданими полями (батьківський не змінюється).
-- `WithContext` — повертає **новий** `Logger` з полями з контексту (див. `ContextWithFields`).
+- `WithFields` — returns a **new** `Logger` with added fields (the parent is unchanged).
+- `WithContext` — returns a **new** `Logger` with fields from the context (see `ContextWithFields`).
 - `Debugw/Infow/...` — sugar key-value API: `logger.Infow("msg", "key", "val", "num", 42)`.
-- `Log()` — повертає `*zap.Logger` для розширеного використання.
-- `Sync()` — flush буферів. Завжди викликайте `defer logger.Sync()` перед виходом з програми.
+- `Log()` — returns `*zap.Logger` for advanced usage.
+- `Sync()` — flushes buffers. Always call `defer logger.Sync()` before exiting the program.
 
 ## Config
 
@@ -102,50 +102,50 @@ type Config struct {
 }
 ```
 
-`DefaultConfig()` повертає конфігурацію з усіма значеннями за замовчуванням.
+`DefaultConfig()` returns a configuration with all default values.
 
-## Функціональні опції
+## Functional Options
 
-| Опція | Опис |
-|-------|------|
-| `WithConsoleLevel(level)` | Рівень логування в консоль |
-| `WithFileEnabled(bool)` | Увімкнути/вимкнути файловий лог |
-| `WithFileLevel(level)` | Рівень логування у файл |
-| `WithFilePath(path)` | Шлях до лог-файлу |
-| `WithFileMaxSize(mb)` | Максимальний розмір файлу |
-| `WithFileMaxBackups(n)` | Кількість ротованих файлів |
-| `WithFileMaxAge(days)` | Термін зберігання файлів |
-| `WithFileCompress(bool)` | Gzip-стиснення ротованих файлів |
-| `WithCallerSkip(n)` | Глибина caller skip |
-| `WithSampling(initial, thereafter)` | Семплінг логів (rate limiting) |
+| Option | Description |
+|--------|-------------|
+| `WithConsoleLevel(level)` | Console log level |
+| `WithFileEnabled(bool)` | Enable/disable file logging |
+| `WithFileLevel(level)` | File log level |
+| `WithFilePath(path)` | Path to the log file |
+| `WithFileMaxSize(mb)` | Maximum file size |
+| `WithFileMaxBackups(n)` | Number of rotated files |
+| `WithFileMaxAge(days)` | File retention period |
+| `WithFileCompress(bool)` | Gzip compression of rotated files |
+| `WithCallerSkip(n)` | Caller skip depth |
+| `WithSampling(initial, thereafter)` | Log sampling (rate limiting) |
 
-## Context-aware логування
+## Context-Aware Logging
 
-Для прокидання trace/request ID через `context.Context`:
+For propagating trace/request IDs through `context.Context`:
 
 ```go
-// Зберігти поля в контексті
+// Store fields in context
 ctx = logging.ContextWithFields(ctx, logging.Fields{
     "trace_id":   "abc-xyz",
     "request_id": "req-123",
 })
 
-// Кілька викликів накопичують поля:
+// Multiple calls accumulate fields:
 ctx = logging.ContextWithFields(ctx, logging.Fields{"user_id": 42})
 
-// Використати в логері
+// Use with a logger
 logger.WithContext(ctx).Infof("Processing request")
 
-// Або глобально
+// Or globally
 logging.WithContext(ctx).Infof("Global with context")
 
-// Дістати поля з контексту
+// Retrieve fields from context
 fields := logging.FieldsFromContext(ctx)
 ```
 
-## Sugar key-value API
+## Sugar Key-Value API
 
-Методи `Debugw/Infow/Warnw/Errorw/Fatalw/Panicw` приймають повідомлення та пари ключ-значення:
+The `Debugw/Infow/Warnw/Errorw/Fatalw/Panicw` methods accept a message and key-value pairs:
 
 ```go
 logger.Infow("request handled",
@@ -155,11 +155,11 @@ logger.Infow("request handled",
 )
 ```
 
-Також доступні на рівні пакету: `logging.Infow(...)`, `logging.Errorw(...)` тощо.
+Also available at the package level: `logging.Infow(...)`, `logging.Errorw(...)`, etc.
 
-## Типізовані поля (Field helpers)
+## Typed Fields (Field Helpers)
 
-Для zero-allocation полів при роботі з `*zap.Logger` через `Log()`:
+For zero-allocation fields when working with `*zap.Logger` via `Log()`:
 
 ```go
 logger.Log().Info("structured",
@@ -176,35 +176,35 @@ logger.Log().Info("structured",
 )
 ```
 
-| Хелпер | Опис |
-|--------|------|
-| `String(key, val)` | Рядок |
-| `Int(key, val)` | Ціле число |
-| `Int64(key, val)` | Ціле число (int64) |
-| `Float64(key, val)` | Дробове число |
-| `Bool(key, val)` | Булеве значення |
-| `Err(err)` | Помилка (ключ = `"error"`) |
-| `NamedErr(key, err)` | Помилка з кастомним ключем |
-| `Duration(key, val)` | Тривалість |
-| `Time(key, val)` | Час |
-| `Any(key, val)` | Довільне значення (reflection) |
-| `Stringer(key, val)` | Значення з методом `String()` |
+| Helper | Description |
+|--------|-------------|
+| `String(key, val)` | String |
+| `Int(key, val)` | Integer |
+| `Int64(key, val)` | Integer (int64) |
+| `Float64(key, val)` | Float |
+| `Bool(key, val)` | Boolean |
+| `Err(err)` | Error (key = `"error"`) |
+| `NamedErr(key, err)` | Error with a custom key |
+| `Duration(key, val)` | Duration |
+| `Time(key, val)` | Time |
+| `Any(key, val)` | Arbitrary value (reflection) |
+| `Stringer(key, val)` | Value with a `String()` method |
 
-## Семплінг (Log Sampling)
+## Log Sampling
 
-Для high-throughput сервісів можна обмежити кількість однакових лог-рядків:
+For high-throughput services, you can limit the number of identical log lines:
 
 ```go
 logger, _ := logging.New(
-    logging.WithSampling(100, 10), // 100 msg/sec початково, потім кожне 10-те
+    logging.WithSampling(100, 10), // 100 msg/sec initially, then every 10th
 )
 ```
 
-Коли `SamplingInitial = 0` — семплінг вимкнений (за замовчуванням).
+When `SamplingInitial = 0` — sampling is disabled (default).
 
-## Глобальні функції
+## Global Functions
 
-Пакет надає зручний шар глобальних функцій, які делегують до default-логера:
+The package provides a convenient global function layer that delegates to the default logger:
 
 ```go
 logging.Infof("Server started on port %d", 8080)
@@ -213,11 +213,11 @@ logging.Infow("event", "key", "value")
 logging.WithContext(ctx).Infof("Traced request")
 ```
 
-Глобальний логер ініціалізується лениво з env-змінних при першому виклику.
+The global logger is lazily initialized from environment variables on first use.
 
 ### `SetDefault(l Logger)`
 
-Замінює глобальний логер на кастомний екземпляр. CallerSkip автоматично коригується (+1) для коректного відображення джерела виклику.
+Replaces the global logger with a custom instance. CallerSkip is automatically adjusted (+1) to correctly display the call source.
 
 ```go
 logger, _ := logging.New(logging.WithConsoleLevel("warn"))
@@ -225,64 +225,64 @@ logging.SetDefault(logger)
 logging.Warnf("Now using custom logger")
 ```
 
-## Змінні середовища
+## Environment Variables
 
-| Змінна | Опис | Значення за замовчуванням |
-|--------|------|--------------------------|
-| `LOG_LEVEL_CONSOLE` | Рівень логування в консоль | `debug` |
-| `LOG_FILE_ENABLE` | Увімкнути запис у файл | `false` |
-| `LOG_LEVEL_FILE` | Рівень логування у файл | `debug` |
-| `LOG_FILE_PATH` | Шлях до файлу логів | `logs/example.log` |
-| `LOG_FILE_MAX_SIZE` | Максимальний розмір файлу (МБ) | `100` |
-| `LOG_FILE_MAX_BACKUPS` | Кількість ротованих файлів | `7` |
-| `LOG_FILE_MAX_AGE` | Максимальний вік файлу (днів) | `5` |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `LOG_LEVEL_CONSOLE` | Console log level | `debug` |
+| `LOG_FILE_ENABLE` | Enable file logging | `false` |
+| `LOG_LEVEL_FILE` | File log level | `debug` |
+| `LOG_FILE_PATH` | Log file path | `logs/example.log` |
+| `LOG_FILE_MAX_SIZE` | Maximum file size (MB) | `100` |
+| `LOG_FILE_MAX_BACKUPS` | Number of rotated files | `7` |
+| `LOG_FILE_MAX_AGE` | Maximum file age (days) | `5` |
 
-## Формат виводу
+## Output Format
 
-**Консоль** — human-readable (development encoder):
+**Console** — human-readable (development encoder):
 ```
 2026-03-09T12:00:00.000+0200  INFO  myapp/main.go:15  Request processed  {"user_id": 42}
 ```
 
-**Файл** — JSON (production encoder):
+**File** — JSON (production encoder):
 ```json
 {"level":"info","ts":"2026-03-09T12:00:00.000+0200","caller":"myapp/main.go:15","msg":"Request processed","user_id":42}
 ```
 
-## Ротація файлів
+## File Rotation
 
-При `LOG_FILE_ENABLE=true` лог-файли автоматично ротуються:
-- При досягненні `LOG_FILE_MAX_SIZE` МБ
-- Старі файли стискаються (gzip)
-- Зберігається не більше `LOG_FILE_MAX_BACKUPS` архівів
-- Файли старші за `LOG_FILE_MAX_AGE` днів видаляються
+When `LOG_FILE_ENABLE=true`, log files are rotated automatically:
+- When the file reaches `LOG_FILE_MAX_SIZE` MB
+- Old files are compressed (gzip)
+- No more than `LOG_FILE_MAX_BACKUPS` archives are kept
+- Files older than `LOG_FILE_MAX_AGE` days are deleted
 
-## Рівні логування
+## Log Levels
 
-| Рівень | Призначення |
-|--------|-------------|
-| `debug` | Детальна діагностична інформація |
-| `info` | Загальна інформація про роботу |
-| `warn` | Попередження, що не блокують роботу |
-| `error` | Помилки, що потребують уваги |
-| `fatal` | Критичні помилки → `os.Exit(1)` |
-| `panic` | Критичні помилки → `panic()` |
+| Level | Purpose |
+|-------|---------|
+| `debug` | Detailed diagnostic information |
+| `info` | General operational information |
+| `warn` | Warnings that do not block operation |
+| `error` | Errors that require attention |
+| `fatal` | Critical errors → `os.Exit(1)` |
+| `panic` | Critical errors → `panic()` |
 
 ## CallerSkip
 
-- **Instance-based** (`New`, `NewWithConfig`) — `CallerSkip: 1` (за замовчуванням), caller вказує на код, що викликав `logger.Infof(...)`.
-- **Глобальні функції** (`logging.Infof(...)`) — +1 автоматично (= 2), щоб пропустити обгортку в `formatting.go`.
-- **`SetDefault`** — автоматично додає +1 до CallerSkip.
-- **`WithFields` (глобальний)** — коригує CallerSkip(-1), щоб повернутий `Logger` правильно показував caller при прямому використанні.
+- **Instance-based** (`New`, `NewWithConfig`) — `CallerSkip: 1` (default), the caller points to the code that called `logger.Infof(...)`.
+- **Global functions** (`logging.Infof(...)`) — +1 automatically (= 2), to skip the wrapper in `formatting.go`.
+- **`SetDefault`** — automatically adds +1 to CallerSkip.
+- **`WithFields` (global)** — adjusts CallerSkip(-1) so the returned `Logger` correctly displays the caller when used directly.
 
-## Діагностика
+## Diagnostics
 
 ```go
 logging.CheckEnvironments()
 ```
 
-Виводить поточні значення всіх env-змінних через `log.Println`.
+Prints the current values of all environment variables via `log.Println`.
 
 ## Contributing
 
-Див. [CONTRIBUTING.md](../CONTRIBUTING.md).
+See [CONTRIBUTING.md](../CONTRIBUTING.md).
