@@ -12,7 +12,6 @@ output:
   formats:
     text:
       path: stdout
-  sort-results: true
 
 linters:
   enable:
@@ -70,29 +69,26 @@ linters:
       min-len: 3
       min-occurrences: 3
 
+  exclusions:
+    rules:
+      # Allow dot-imports in test files (e.g., for testify)
+      - path: _test\.go
+        linters:
+          - revive
+        text: "dot-imports"
+
+      # Allow unused parameters in test helpers
+      - path: _test\.go
+        linters:
+          - unparam
+
+      # Allow fmt.Print* in cmd/
+      - path: cmd/
+        linters:
+          - revive
+        text: "exported"
+
 formatters:
   enable:
     - gofmt           # checks code is gofmt-ed
     - goimports       # checks imports are sorted
-
-issues:
-  exclude-rules:
-    # Allow dot-imports in test files (e.g., for testify)
-    - path: _test\.go
-      linters:
-        - revive
-      text: "dot-imports"
-
-    # Allow unused parameters in test helpers
-    - path: _test\.go
-      linters:
-        - unparam
-
-    # Allow fmt.Print* in cmd/
-    - path: cmd/
-      linters:
-        - revive
-      text: "exported"
-
-  max-issues-per-linter: 50
-  max-same-issues: 5
