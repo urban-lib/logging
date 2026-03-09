@@ -1,60 +1,60 @@
-# Contributing to logging/v2
+# Contributing to logging/v3
 
-Дякуємо за інтерес до проекту! Нижче описано правила та процес контрибуції.
+Thank you for your interest in the project! Below you'll find the guidelines and contribution process.
 
-## Вимоги
+## Requirements
 
 - **Go 1.22+**
-- `golangci-lint` для лінтингу
-- `git` з підтримкою [Conventional Commits](https://www.conventionalcommits.org/)
+- `golangci-lint` for linting
+- `git` with [Conventional Commits](https://www.conventionalcommits.org/) support
 
-## Початок роботи
+## Getting Started
 
 ```bash
-# Клонування
+# Clone
 git clone https://github.com/urban-lib/logging.git
 cd logging
 
-# Встановлення залежностей
+# Install dependencies
 go mod download
 
-# Запуск тестів
+# Run tests
 go test ./...
 
-# Лінтинг
+# Lint
 golangci-lint run ./...
 ```
 
 ## Git Workflow
 
-### Гілки
+### Branches
 
-| Гілка | Призначення |
-|-------|-------------|
-| `main` | Стабільна версія, захищена від прямих push |
-| `develop` | Основна гілка розробки |
-| `feature/*` | Нова функціональність |
-| `fix/*` | Виправлення багів |
-| `docs/*` | Зміни в документації |
+| Branch | Purpose |
+|--------|---------|
+| `main` | Stable version, protected from direct pushes |
+| `develop` | Main development branch |
+| `feature/*` | New features |
+| `fix/*` | Bug fixes |
+| `docs/*` | Documentation changes |
 
-### Процес
+### Process
 
-1. Створіть гілку від `develop`:
+1. Create a branch from `develop`:
    ```bash
    git checkout develop
    git pull origin develop
    git checkout -b feature/my-feature
    ```
-2. Внесіть зміни та напишіть тести.
-3. Переконайтесь що всі тести проходять: `go test ./...`
-4. Переконайтесь що лінтер не має зауважень: `golangci-lint run ./...`
-5. Створіть Pull Request в `develop`.
+2. Make your changes and write tests.
+3. Make sure all tests pass: `go test ./...`
+4. Make sure the linter reports no issues: `golangci-lint run ./...`
+5. Open a Pull Request targeting `develop`.
 
 ## Conventional Commits
 
-Всі коміти **мають** відповідати формату [Conventional Commits](https://www.conventionalcommits.org/). Це необхідно для автоматичної генерації тегів та changelog.
+All commits **must** follow the [Conventional Commits](https://www.conventionalcommits.org/) format. This is required for automatic tag generation and changelog.
 
-### Формат
+### Format
 
 ```
 <type>(<scope>): <description>
@@ -64,91 +64,91 @@ golangci-lint run ./...
 [optional footer(s)]
 ```
 
-### Типи
+### Types
 
-| Тип | Опис | Вплив на версію |
-|-----|------|-----------------|
-| `feat` | Нова функціональність | **minor** (0.X.0) |
-| `fix` | Виправлення бага | **patch** (0.0.X) |
-| `docs` | Зміни в документації | — |
-| `refactor` | Рефакторинг без зміни поведінки | — |
-| `test` | Додавання / зміна тестів | — |
-| `chore` | Оновлення залежностей, CI та ін. | — |
-| `perf` | Покращення продуктивності | **patch** |
-| `BREAKING CHANGE` | Зміна з порушенням зворотної сумісності (в footer або `!` після type) | **major** (X.0.0) |
+| Type | Description | Version Impact |
+|------|-------------|----------------|
+| `feat` | New feature | **minor** (0.X.0) |
+| `fix` | Bug fix | **patch** (0.0.X) |
+| `docs` | Documentation changes | — |
+| `refactor` | Refactoring without behavior change | — |
+| `test` | Adding / modifying tests | — |
+| `chore` | Dependency updates, CI, etc. | — |
+| `perf` | Performance improvements | **patch** |
+| `BREAKING CHANGE` | Breaking change (in footer or `!` after type) | **major** (X.0.0) |
 
-### Приклади
+### Examples
 
 ```bash
-# Нова функціональність
+# New feature
 git commit -m "feat(logger): add WithContext method for trace propagation"
 
-# Виправлення бага
+# Bug fix
 git commit -m "fix(env): correct default level comparison in getLogLevelConsole"
 
 # Breaking change
 git commit -m "feat(api)!: replace GetLogger with New constructor"
 
-# Документація
+# Documentation
 git commit -m "docs: update README with env variables table"
 ```
 
-## Автоматичне тегування
+## Automatic Tagging
 
-При мержі в `main` GitHub Actions автоматично:
-1. Аналізує коміти з моменту останнього тегу.
-2. Визначає тип версії (major/minor/patch) на основі Conventional Commits.
-3. Створює новий git tag (`vX.Y.Z`).
-4. Генерує GitHub Release з changelog.
+When merging into `main`, GitHub Actions will automatically:
+1. Analyze commits since the last tag.
+2. Determine the version bump type (major/minor/patch) based on Conventional Commits.
+3. Create a new git tag (`vX.Y.Z`).
+4. Generate a GitHub Release with a changelog.
 
-**Не створюйте теги вручну** — це робить CI автоматично.
+**Do not create tags manually** — CI handles this automatically.
 
 ## Code Style
 
-- Дотримуйтесь `gofmt` / `goimports`.
-- Публічні функції, типи та методи **мають** мати GoDoc коментарі.
-- Назви змінних та функцій — англійською.
-- Уникайте глобального стану де можливо.
-- Помилки обробляйте явно, не ігноруйте.
+- Follow `gofmt` / `goimports` formatting.
+- Public functions, types, and methods **must** have GoDoc comments.
+- Variable and function names should be in English.
+- Avoid global state where possible.
+- Handle errors explicitly, never ignore them.
 
-## Тести
+## Tests
 
-- Кожна нова функція або виправлення **має** супроводжуватись тестами.
-- Використовуйте table-driven tests де доцільно.
-- Мінімальне покриття: **80%**.
-- Файли тестів: `*_test.go` поруч з кодом що тестується.
+- Every new feature or fix **must** be accompanied by tests.
+- Use table-driven tests where appropriate.
+- Minimum coverage: **80%**.
+- Test files: `*_test.go` alongside the code being tested.
 
 ```bash
-# Запуск тестів з покриттям
+# Run tests with coverage
 go test -coverprofile=coverage.out ./...
 go tool cover -html=coverage.out
 ```
 
-## Pull Request
+## Pull Requests
 
-### Чеклист перед створенням PR
+### Checklist before opening a PR
 
-- [ ] Код компілюється без помилок (`go build ./...`)
-- [ ] Всі тести проходять (`go test ./...`)
-- [ ] Лінтер не має зауважень (`golangci-lint run`)
-- [ ] Додані тести для нової функціональності / виправлення
-- [ ] Коміти відповідають Conventional Commits
-- [ ] Оновлена документація (якщо змінюється публічний API)
+- [ ] Code compiles without errors (`go build ./...`)
+- [ ] All tests pass (`go test ./...`)
+- [ ] Linter reports no issues (`golangci-lint run`)
+- [ ] Tests added for new functionality / fix
+- [ ] Commits follow Conventional Commits
+- [ ] Documentation updated (if public API changed)
 
 ### Review
 
-- PR потребує мінімум **1 approve** для мержу.
-- CI перевірки мають бути зелені.
-- Squash merge в `develop`, merge commit в `main`.
+- A PR requires at least **1 approval** to merge.
+- CI checks must be green.
+- Squash merge into `develop`, merge commit into `main`.
 
-## Повідомлення про баги
+## Reporting Bugs
 
-Створіть Issue з:
-- Версія Go та ОС
-- Мінімальний код для відтворення
-- Очікувана та фактична поведінка
-- Логи / stack trace (якщо є)
+Create an Issue with:
+- Go version and OS
+- Minimal reproduction code
+- Expected vs. actual behavior
+- Logs / stack trace (if available)
 
-## Ліцензія
+## License
 
-Вносячи зміни, ви погоджуєтесь що вони будуть опубліковані під тою ж ліцензією що і проект.
+By contributing, you agree that your contributions will be published under the same license as the project.
