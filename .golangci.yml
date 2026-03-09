@@ -1,0 +1,95 @@
+# .golangci.yml — golangci-lint configuration
+# Docs: https://golangci-lint.run/usage/configuration/
+
+run:
+  timeout: 3m
+  go: "1.22"
+  tests: true
+
+output:
+  formats:
+    - format: colored-line-number
+  sort-results: true
+
+linters:
+  enable:
+    # --- Bug detection ---
+    - errcheck        # check that errors are handled
+    - govet           # reports suspicious constructs
+    - staticcheck     # comprehensive static analysis
+    - typecheck        # type-checks Go code
+
+    # --- Style & simplification ---
+    - gofmt           # checks code is gofmt-ed
+    - goimports       # checks imports are sorted
+    - goconst         # finds repeated strings that could be constants
+    - gosimple        # simplification suggestions
+    - unused          # finds unused code
+
+    # --- Performance ---
+    - prealloc        # finds slice pre-allocation opportunities
+
+    # --- Code quality ---
+    - revive          # extensible linter (replaces golint)
+    - misspell        # finds common misspellings
+    - unconvert       # removes unnecessary type conversions
+    - unparam         # finds unused function parameters
+    - bodyclose       # checks HTTP response body is closed
+    - noctx           # finds HTTP requests without context
+    - exportloopref   # checks for pointers to enclosing loop variables
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: false
+
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment # too noisy for library code
+
+  revive:
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: increment-decrement
+      - name: var-naming
+      - name: range
+      - name: receiver-naming
+      - name: indent-error-flow
+      - name: superfluous-else
+      - name: unreachable-code
+
+  misspell:
+    locale: US
+
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+
+issues:
+  exclude-rules:
+    # Allow dot-imports in test files (e.g., for testify)
+    - path: _test\.go
+      linters:
+        - revive
+      text: "dot-imports"
+
+    # Allow unused parameters in test helpers
+    - path: _test\.go
+      linters:
+        - unparam
+
+    # Allow fmt.Print* in cmd/
+    - path: cmd/
+      linters:
+        - revive
+      text: "exported"
+
+  max-issues-per-linter: 50
+  max-same-issues: 5
