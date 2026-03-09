@@ -1,10 +1,10 @@
-module github.com/urban-lib/logging/v2
+module github.com/urban-lib/logging/v3
 
-go 1.18
+go 1.22
 
 require (
-	go.uber.org/atomic v1.7.0 // indirect
-	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.21.0 // indirect
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
+	go.uber.org/zap v1.27.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
+
+require go.uber.org/multierr v1.11.0 // indirect

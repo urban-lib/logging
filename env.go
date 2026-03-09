@@ -25,7 +25,7 @@ func getLogFileEnable() bool {
 
 func getLogLevelConsole(def string) string {
 	strValue := os.Getenv(LogLevelConsole)
-	if len(strValue) == 0 && len(def) > 1 {
+	if strValue == "" && def != "" {
 		return strings.ToLower(def)
 	}
 	return strings.ToLower(strValue)
@@ -81,7 +81,7 @@ func CheckEnvironments() {
 	log.Printf("%s\t=\t%s\n", LogLevelFile, getLogLevelFile(""))
 	log.Printf("%s\t=\t%s\n", LogFilePath, getLogFilePath(""))
 	log.Printf("%s\t=\t%d\n", LogFileMaxSize, getLogFileMaxSize(0))
-	log.Printf("%s=\t%d\n", LogFileMaxBackups, getLogFileMaxBackups(0))
+	log.Printf("%s\t=\t%d\n", LogFileMaxBackups, getLogFileMaxBackups(0))
 	log.Printf("%s\t=\t%d\n", LogFileMaxAge, getLogFileMaxAge(0))
 	log.Println(strings.Repeat("*", 50))
 }
