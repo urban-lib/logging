@@ -19,11 +19,11 @@ var (
 // parseLevel converts a string level name to a zapcore.Level.
 // Returns fallback when the string cannot be parsed.
 func parseLevel(level string, fallback zapcore.Level) zapcore.Level {
-	if l, err := zapcore.ParseLevel(level); err != nil {
+	l, err := zapcore.ParseLevel(level)
+	if err != nil {
 		return fallback
-	} else {
-		return l
 	}
+	return l
 }
 
 // textEncoder returns a human-readable console encoder (development config).

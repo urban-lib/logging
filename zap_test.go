@@ -159,8 +159,8 @@ func TestNewFromEnv_Defaults(t *testing.T) {
 
 func TestNewFromEnv_WithEnvVars(t *testing.T) {
 	clearEnv(t)
-	os.Setenv(LogLevelConsole, "warn")
-	os.Setenv(LogFileEnable, "false")
+	t.Setenv(LogLevelConsole, "warn")
+	t.Setenv(LogFileEnable, "false")
 
 	logger, err := NewFromEnv()
 	if err != nil {
@@ -314,12 +314,12 @@ func TestZapLogger_WithFields_DoesNotMutateParent(t *testing.T) {
 	}
 }
 
-func TestZapLogger_WithFields_ReturnsLogger(t *testing.T) {
+func TestZapLogger_WithFields_ReturnsLogger(_ *testing.T) {
 	logger, _ := newTestLogger(zapcore.DebugLevel)
 	child := logger.WithFields(Fields{"key": "val"})
-
-	// Verify it implements Logger interface
-	var _ Logger = child
+	if child == nil {
+		panic("WithFields returned nil")
+	}
 }
 
 // --- Log() ---

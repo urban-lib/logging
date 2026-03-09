@@ -19,6 +19,3 @@ func containsAll(s string, subs ...string) bool {
 // zapcoreDebugLevel returns zapcore.DebugLevel.
 // Keeps test files clean from importing zapcore directly where only the level is needed.
 func zapcoreDebugLevel() zapcore.Level { return zapcore.DebugLevel }
-
-// zapcoreInfoLevel returns zapcore.InfoLevel.
-func zapcoreInfoLevel() zapcore.Level { return zapcore.InfoLevel }

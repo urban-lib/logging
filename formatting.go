@@ -1,4 +1,5 @@
-// Package-level convenience functions that delegate to the global default logger.
+// Package logging provides package-level convenience functions that delegate
+// to the global default logger.
 // The default logger is automatically initialized from environment variables on first use.
 package logging
 

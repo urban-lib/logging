@@ -12,7 +12,7 @@ func clearEnv(t *testing.T) {
 		LogFilePath, LogFileMaxSize, LogFileMaxBackups, LogFileMaxAge,
 	}
 	for _, v := range envVars {
-		os.Unsetenv(v)
+		_ = os.Unsetenv(v)
 	}
 }
 
@@ -35,7 +35,7 @@ func TestGetLogFileEnable(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			clearEnv(t)
 			if tt.envValue != "" {
-				os.Setenv(LogFileEnable, tt.envValue)
+				t.Setenv(LogFileEnable, tt.envValue)
 			}
 			if got := getLogFileEnable(); got != tt.want {
 				t.Errorf("getLogFileEnable() = %v, want %v", got, tt.want)
@@ -63,7 +63,7 @@ func TestGetLogLevelConsole(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			clearEnv(t)
 			if tt.envValue != "" {
-				os.Setenv(LogLevelConsole, tt.envValue)
+				t.Setenv(LogLevelConsole, tt.envValue)
 			}
 			if got := getLogLevelConsole(tt.def); got != tt.want {
 				t.Errorf("getLogLevelConsole(%q) = %q, want %q", tt.def, got, tt.want)
@@ -89,7 +89,7 @@ func TestGetLogLevelFile(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			clearEnv(t)
 			if tt.envValue != "" {
-				os.Setenv(LogLevelFile, tt.envValue)
+				t.Setenv(LogLevelFile, tt.envValue)
 			}
 			if got := getLogLevelFile(tt.def); got != tt.want {
 				t.Errorf("getLogLevelFile(%q) = %q, want %q", tt.def, got, tt.want)
@@ -115,7 +115,7 @@ func TestGetLogFilePath(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			clearEnv(t)
 			if tt.envValue != "" {
-				os.Setenv(LogFilePath, tt.envValue)
+				t.Setenv(LogFilePath, tt.envValue)
 			}
 			if got := getLogFilePath(tt.def); got != tt.want {
 				t.Errorf("getLogFilePath(%q) = %q, want %q", tt.def, got, tt.want)
@@ -142,7 +142,7 @@ func TestGetLogFileMaxSize(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			clearEnv(t)
 			if tt.envValue != "" {
-				os.Setenv(LogFileMaxSize, tt.envValue)
+				t.Setenv(LogFileMaxSize, tt.envValue)
 			}
 			if got := getLogFileMaxSize(tt.def); got != tt.want {
 				t.Errorf("getLogFileMaxSize(%d) = %d, want %d", tt.def, got, tt.want)
@@ -168,7 +168,7 @@ func TestGetLogFileMaxBackups(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			clearEnv(t)
 			if tt.envValue != "" {
-				os.Setenv(LogFileMaxBackups, tt.envValue)
+				t.Setenv(LogFileMaxBackups, tt.envValue)
 			}
 			if got := getLogFileMaxBackups(tt.def); got != tt.want {
 				t.Errorf("getLogFileMaxBackups(%d) = %d, want %d", tt.def, got, tt.want)
@@ -194,7 +194,7 @@ func TestGetLogFileMaxAge(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			clearEnv(t)
 			if tt.envValue != "" {
-				os.Setenv(LogFileMaxAge, tt.envValue)
+				t.Setenv(LogFileMaxAge, tt.envValue)
 			}
 			if got := getLogFileMaxAge(tt.def); got != tt.want {
 				t.Errorf("getLogFileMaxAge(%d) = %d, want %d", tt.def, got, tt.want)

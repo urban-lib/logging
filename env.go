@@ -8,13 +8,20 @@ import (
 )
 
 const (
-	LogLevelConsole   = "LOG_LEVEL_CONSOLE"
-	LogFileEnable     = "LOG_FILE_ENABLE"
-	LogLevelFile      = "LOG_LEVEL_FILE"
-	LogFilePath       = "LOG_FILE_PATH"
-	LogFileMaxSize    = "LOG_FILE_MAX_SIZE"
+	// LogLevelConsole is the environment variable name for the console log level.
+	LogLevelConsole = "LOG_LEVEL_CONSOLE"
+	// LogFileEnable is the environment variable name to enable file logging.
+	LogFileEnable = "LOG_FILE_ENABLE"
+	// LogLevelFile is the environment variable name for the file log level.
+	LogLevelFile = "LOG_LEVEL_FILE"
+	// LogFilePath is the environment variable name for the log file path.
+	LogFilePath = "LOG_FILE_PATH"
+	// LogFileMaxSize is the environment variable name for maximum file size in MB.
+	LogFileMaxSize = "LOG_FILE_MAX_SIZE"
+	// LogFileMaxBackups is the environment variable name for maximum backup count.
 	LogFileMaxBackups = "LOG_FILE_MAX_BACKUPS"
-	LogFileMaxAge     = "LOG_FILE_MAX_AGE"
+	// LogFileMaxAge is the environment variable name for maximum file age in days.
+	LogFileMaxAge = "LOG_FILE_MAX_AGE"
 )
 
 // getLogFileEnable reads LOG_FILE_ENABLE from the environment.

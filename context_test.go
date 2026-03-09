@@ -44,6 +44,7 @@ func TestContextWithFields_Override(t *testing.T) {
 }
 
 func TestFieldsFromContext_Nil(t *testing.T) {
+	//nolint:staticcheck // testing nil context behavior intentionally
 	got := FieldsFromContext(nil)
 	if got != nil {
 		t.Errorf("expected nil, got %v", got)

@@ -21,13 +21,13 @@ import (
 func main() {
 	// ── Example 1: Global logger from env variables ──
 	// Set env vars (in production, set these externally)
-	os.Setenv(logging.LogLevelConsole, "DEBUG")
-	os.Setenv(logging.LogFileEnable, "true")
-	os.Setenv(logging.LogLevelFile, "DEBUG")
-	os.Setenv(logging.LogFilePath, "logs/test.log")
-	os.Setenv(logging.LogFileMaxSize, "50")
-	os.Setenv(logging.LogFileMaxBackups, "2")
-	os.Setenv(logging.LogFileMaxAge, "1")
+	_ = os.Setenv(logging.LogLevelConsole, "DEBUG")
+	_ = os.Setenv(logging.LogFileEnable, "true")
+	_ = os.Setenv(logging.LogLevelFile, "DEBUG")
+	_ = os.Setenv(logging.LogFilePath, "logs/test.log")
+	_ = os.Setenv(logging.LogFileMaxSize, "50")
+	_ = os.Setenv(logging.LogFileMaxBackups, "2")
+	_ = os.Setenv(logging.LogFileMaxAge, "1")
 
 	logging.CheckEnvironments()
 
@@ -47,7 +47,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer logger.Sync()
+	defer func() { _ = logger.Sync() }()
 
 	logger.Infof("Instance logger: info message")
 	logger.WithFields(logging.Fields{"request_id": "abc-123"}).Warnf("Instance logger: with fields")
@@ -62,7 +62,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer logger2.Sync()
+	defer func() { _ = logger2.Sync() }()
 
 	logger2.Debugf("Options logger: debug message")
 	logger2.Errorf("Options logger: error message")
@@ -105,7 +105,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer sampledLogger.Sync()
+	defer func() { _ = sampledLogger.Sync() }()
 
 	for i := 0; i < 20; i++ {
 		sampledLogger.Infof("High-throughput message #%d", i)

@@ -1,5 +1,7 @@
-# .golangci.yml — golangci-lint configuration
+# .golangci.yml — golangci-lint v2 configuration
 # Docs: https://golangci-lint.run/usage/configuration/
+
+version: "2"
 
 run:
   timeout: 3m
@@ -8,7 +10,8 @@ run:
 
 output:
   formats:
-    - format: colored-line-number
+    text:
+      path: stdout
   sort-results: true
 
 linters:
@@ -17,13 +20,9 @@ linters:
     - errcheck        # check that errors are handled
     - govet           # reports suspicious constructs
     - staticcheck     # comprehensive static analysis
-    - typecheck        # type-checks Go code
 
     # --- Style & simplification ---
-    - gofmt           # checks code is gofmt-ed
-    - goimports       # checks imports are sorted
     - goconst         # finds repeated strings that could be constants
-    - gosimple        # simplification suggestions
     - unused          # finds unused code
 
     # --- Performance ---
@@ -36,41 +35,45 @@ linters:
     - unparam         # finds unused function parameters
     - bodyclose       # checks HTTP response body is closed
     - noctx           # finds HTTP requests without context
-    - exportloopref   # checks for pointers to enclosing loop variables
 
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-    check-blank: false
+formatters:
+  enable:
+    - gofmt           # checks code is gofmt-ed
+    - goimports       # checks imports are sorted
 
-  govet:
-    enable-all: true
-    disable:
-      - fieldalignment # too noisy for library code
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: false
 
-  revive:
-    rules:
-      - name: blank-imports
-      - name: context-as-argument
-      - name: dot-imports
-      - name: error-return
-      - name: error-strings
-      - name: error-naming
-      - name: exported
-      - name: increment-decrement
-      - name: var-naming
-      - name: range
-      - name: receiver-naming
-      - name: indent-error-flow
-      - name: superfluous-else
-      - name: unreachable-code
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment # too noisy for library code
 
-  misspell:
-    locale: US
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+        - name: increment-decrement
+        - name: var-naming
+        - name: range
+        - name: receiver-naming
+        - name: indent-error-flow
+        - name: superfluous-else
+        - name: unreachable-code
 
-  goconst:
-    min-len: 3
-    min-occurrences: 3
+    misspell:
+      locale: US
+
+    goconst:
+      min-len: 3
+      min-occurrences: 3
 
 issues:
   exclude-rules:
