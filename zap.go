@@ -16,6 +16,8 @@ var (
 	initErr       error
 )
 
+// parseLevel converts a string level name to a zapcore.Level.
+// Returns fallback when the string cannot be parsed.
 func parseLevel(level string, fallback zapcore.Level) zapcore.Level {
 	if l, err := zapcore.ParseLevel(level); err != nil {
 		return fallback
@@ -24,12 +26,14 @@ func parseLevel(level string, fallback zapcore.Level) zapcore.Level {
 	}
 }
 
+// textEncoder returns a human-readable console encoder (development config).
 func textEncoder() zapcore.Encoder {
 	devConfig := zap.NewDevelopmentEncoderConfig()
 	devConfig.EncodeCaller = zapcore.ShortCallerEncoder
 	return zapcore.NewConsoleEncoder(devConfig)
 }
 
+// jsonEncoder returns a JSON encoder for file output (production config).
 func jsonEncoder() zapcore.Encoder {
 	cfg := zap.NewProductionEncoderConfig()
 	cfg.EncodeTime = zapcore.ISO8601TimeEncoder
@@ -61,6 +65,17 @@ func NewWithConfig(cfg Config) (Logger, error) {
 	}
 
 	combinedCore := zapcore.NewTee(cores...)
+
+	// Apply sampling if configured.
+	if cfg.SamplingInitial > 0 {
+		combinedCore = zapcore.NewSamplerWithOptions(
+			combinedCore,
+			1, // tick = 1 second
+			cfg.SamplingInitial,
+			cfg.SamplingThereafter,
+		)
+	}
+
 	logger := zap.New(
 		combinedCore,
 		zap.AddCallerSkip(cfg.CallerSkip),

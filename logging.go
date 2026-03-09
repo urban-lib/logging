@@ -1,6 +1,8 @@
 package logging
 
 import (
+	"context"
+
 	"go.uber.org/zap"
 )
 
@@ -20,8 +22,27 @@ type Logger interface {
 	Panic(args ...any)
 	Fatal(args ...any)
 
+	// Debugw logs a message with alternating key-value pairs at debug level.
+	//   logger.Debugw("request", "method", "GET", "url", "/api")
+	Debugw(msg string, keysAndValues ...any)
+	// Infow logs a message with alternating key-value pairs at info level.
+	Infow(msg string, keysAndValues ...any)
+	// Warnw logs a message with alternating key-value pairs at warn level.
+	Warnw(msg string, keysAndValues ...any)
+	// Errorw logs a message with alternating key-value pairs at error level.
+	Errorw(msg string, keysAndValues ...any)
+	// Fatalw logs a message with alternating key-value pairs at fatal level and calls os.Exit(1).
+	Fatalw(msg string, keysAndValues ...any)
+	// Panicw logs a message with alternating key-value pairs at panic level and panics.
+	Panicw(msg string, keysAndValues ...any)
+
 	// WithFields returns a new Logger with the given fields attached.
 	WithFields(fields Fields) Logger
+
+	// WithContext returns a new Logger with fields extracted from the context.
+	// Fields are stored in the context via [ContextWithFields].
+	// If the context has no fields, the original Logger is returned unchanged.
+	WithContext(ctx context.Context) Logger
 
 	// Log returns the underlying *zap.Logger for advanced usage.
 	Log() *zap.Logger
@@ -85,6 +106,46 @@ func (z *zapLogger) WithFields(fields Fields) Logger {
 		sugar:  z.sugar.With(f...),
 		logger: z.logger,
 	}
+}
+
+// WithContext returns a new Logger enriched with fields from the context.
+// Fields are stored via [ContextWithFields]. If the context carries no fields,
+// the same Logger is returned.
+func (z *zapLogger) WithContext(ctx context.Context) Logger {
+	if f := FieldsFromContext(ctx); len(f) > 0 {
+		return z.WithFields(f)
+	}
+	return z
+}
+
+// Debugw logs a message with alternating key-value pairs at debug level.
+func (z *zapLogger) Debugw(msg string, keysAndValues ...any) {
+	z.sugar.Debugw(msg, keysAndValues...)
+}
+
+// Infow logs a message with alternating key-value pairs at info level.
+func (z *zapLogger) Infow(msg string, keysAndValues ...any) {
+	z.sugar.Infow(msg, keysAndValues...)
+}
+
+// Warnw logs a message with alternating key-value pairs at warn level.
+func (z *zapLogger) Warnw(msg string, keysAndValues ...any) {
+	z.sugar.Warnw(msg, keysAndValues...)
+}
+
+// Errorw logs a message with alternating key-value pairs at error level.
+func (z *zapLogger) Errorw(msg string, keysAndValues ...any) {
+	z.sugar.Errorw(msg, keysAndValues...)
+}
+
+// Fatalw logs a message with alternating key-value pairs at fatal level and calls os.Exit(1).
+func (z *zapLogger) Fatalw(msg string, keysAndValues ...any) {
+	z.sugar.Fatalw(msg, keysAndValues...)
+}
+
+// Panicw logs a message with alternating key-value pairs at panic level and panics.
+func (z *zapLogger) Panicw(msg string, keysAndValues ...any) {
+	z.sugar.Panicw(msg, keysAndValues...)
 }
 
 // Log returns the underlying *zap.Logger.

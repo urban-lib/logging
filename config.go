@@ -39,6 +39,15 @@ type Config struct {
 	// CallerSkip is the number of callers to skip when determining the caller.
 	// Default: 1 (skips the logging wrapper).
 	CallerSkip int
+
+	// SamplingInitial sets the number of messages per second to allow at each level
+	// before sampling kicks in. 0 disables sampling (default).
+	SamplingInitial int
+
+	// SamplingThereafter keeps every Nth message after the initial burst.
+	// Only used when SamplingInitial > 0.
+	// Default: 0 (disabled).
+	SamplingThereafter int
 }
 
 // DefaultConfig returns configuration with sensible defaults.
@@ -119,5 +128,17 @@ func WithFileCompress(compress bool) Option {
 func WithCallerSkip(skip int) Option {
 	return func(c *Config) {
 		c.CallerSkip = skip
+	}
+}
+
+// WithSampling enables log sampling. After initial messages per second at a
+// given level, only every thereafter-th message is logged. This is useful for
+// high-throughput services where identical log lines can overwhelm the output.
+//
+//	logging.New(logging.WithSampling(100, 10)) // 100/s initial, then every 10th
+func WithSampling(initial, thereafter int) Option {
+	return func(c *Config) {
+		c.SamplingInitial = initial
+		c.SamplingThereafter = thereafter
 	}
 }
