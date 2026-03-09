@@ -136,7 +136,10 @@ func GetLogger() (Logger, error) {
 		defaultLogger, initErr = NewFromEnv()
 		// Rebuild with CallerSkip(2) for correct caller attribution through global functions
 		if initErr == nil {
-			zl := defaultLogger.(*zapLogger)
+			zl, ok := defaultLogger.(*zapLogger)
+			if !ok {
+				return
+			}
 			rebuild := zl.logger.WithOptions(zap.AddCallerSkip(1)) // +1 on top of existing 1 = 2
 			defaultLogger = &zapLogger{
 				sugar:  rebuild.Sugar(),

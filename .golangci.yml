@@ -36,11 +36,6 @@ linters:
     - bodyclose       # checks HTTP response body is closed
     - noctx           # finds HTTP requests without context
 
-formatters:
-  enable:
-    - gofmt           # checks code is gofmt-ed
-    - goimports       # checks imports are sorted
-
   settings:
     errcheck:
       check-type-assertions: true
@@ -74,6 +69,11 @@ formatters:
     goconst:
       min-len: 3
       min-occurrences: 3
+
+formatters:
+  enable:
+    - gofmt           # checks code is gofmt-ed
+    - goimports       # checks imports are sorted
 
 issues:
   exclude-rules:
